@@ -68,6 +68,12 @@ const routes = [
     meta: { requiresAuth: true, requiresSeller: true }
   },
   {
+    path: '/seller/orders',
+    name: 'SellerOrders',
+    component: () => import('../views/seller/Orders.vue'),
+    meta: { requiresAuth: true, requiresSeller: true }
+  },
+  {
     path: '/admin/dashboard',
     name: 'AdminDashboard',
     component: () => import('../views/admin/Dashboard.vue'),
