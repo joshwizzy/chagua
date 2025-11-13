@@ -14,6 +14,15 @@ from .views import (
     DeliveryAddressDetailView,
     logout_view
 )
+from .admin_views import (
+    admin_statistics,
+    admin_users_list,
+    admin_user_detail,
+    admin_products_list,
+    admin_product_action,
+    admin_orders_list,
+    admin_subscriptions_list
+)
 
 app_name = 'users'
 
@@ -35,4 +44,13 @@ urlpatterns = [
     # Delivery Addresses
     path('addresses/', DeliveryAddressListCreateView.as_view(), name='address_list'),
     path('addresses/<int:pk>/', DeliveryAddressDetailView.as_view(), name='address_detail'),
+
+    # Admin endpoints
+    path('admin/statistics/', admin_statistics, name='admin_statistics'),
+    path('admin/users/', admin_users_list, name='admin_users_list'),
+    path('admin/users/<int:user_id>/', admin_user_detail, name='admin_user_detail'),
+    path('admin/products/', admin_products_list, name='admin_products_list'),
+    path('admin/products/<int:product_id>/', admin_product_action, name='admin_product_action'),
+    path('admin/orders/', admin_orders_list, name='admin_orders_list'),
+    path('admin/subscriptions/', admin_subscriptions_list, name='admin_subscriptions_list'),
 ]

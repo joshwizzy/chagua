@@ -47,10 +47,10 @@
         <section class="dashboard-section">
           <h2>Quick Actions</h2>
           <div class="quick-actions">
-            <button class="action-btn">View All Users</button>
-            <button class="action-btn">View All Products</button>
-            <button class="action-btn">View All Orders</button>
-            <button class="action-btn">Manage Subscriptions</button>
+            <button class="action-btn" @click="router.push('/admin/users')">View All Users</button>
+            <button class="action-btn" @click="router.push('/admin/products')">View All Products</button>
+            <button class="action-btn" @click="router.push('/admin/orders')">View All Orders</button>
+            <button class="action-btn" @click="router.push('/admin/subscriptions')">Manage Subscriptions</button>
           </div>
         </section>
       </div>
@@ -60,7 +60,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '../../services/api'
+
+const router = useRouter()
 
 const loading = ref(true)
 const recentActivity = ref([])
@@ -77,19 +80,53 @@ const stats = ref({
 })
 
 onMounted(async () => {
-  // In a real app, these would be dedicated admin endpoints
-  // For now, using placeholders
-  stats.value = {
-    totalUsers: 0,
-    buyers: 0,
-    sellers: 0,
-    totalProducts: 0,
-    activeProducts: 0,
-    totalOrders: 0,
-    pendingOrders: 0,
-    totalRevenue: 0
+  try {
+    // Fetch admin statistics from backend
+    const response = await api.get('/users/admin/statistics/')
+    const data = response.data
+
+    stats.value = {
+      totalUsers: data.users.total,
+      buyers: data.users.buyers,
+      sellers: data.users.sellers,
+      totalProducts: data.products.total,
+      activeProducts: data.products.active,
+      totalOrders: data.orders.total,
+      pendingOrders: data.orders.pending,
+      totalRevenue: data.revenue.subscriptions
+    }
+
+    // Build recent activity from the data
+    recentActivity.value = []
+    if (data.recent_activity.users > 0) {
+      recentActivity.value.push({
+        id: 1,
+        icon: '👤',
+        title: `${data.recent_activity.users} new users registered`,
+        time: 'Last 7 days'
+      })
+    }
+    if (data.recent_activity.products > 0) {
+      recentActivity.value.push({
+        id: 2,
+        icon: '📦',
+        title: `${data.recent_activity.products} new products listed`,
+        time: 'Last 7 days'
+      })
+    }
+    if (data.recent_activity.orders > 0) {
+      recentActivity.value.push({
+        id: 3,
+        icon: '🛒',
+        title: `${data.recent_activity.orders} new orders placed`,
+        time: 'Last 7 days'
+      })
+    }
+  } catch (error) {
+    console.error('Failed to fetch admin statistics:', error)
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 })
 
 const formatPrice = (price) => {

@@ -72,6 +72,30 @@ const routes = [
     name: 'AdminDashboard',
     component: () => import('../views/admin/Dashboard.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: () => import('../views/admin/Users.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/admin/products',
+    name: 'AdminProducts',
+    component: () => import('../views/admin/Products.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/admin/orders',
+    name: 'AdminOrders',
+    component: () => import('../views/admin/Orders.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/admin/subscriptions',
+    name: 'AdminSubscriptions',
+    component: () => import('../views/admin/Subscriptions.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 
