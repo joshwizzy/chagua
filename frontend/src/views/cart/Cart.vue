@@ -96,8 +96,7 @@ async function handleClearCart() {
 }
 
 function proceedToCheckout() {
-  // TODO: Implement checkout flow
-  alert('Checkout functionality coming soon!')
+  router.push('/checkout')
 }
 </script>
 

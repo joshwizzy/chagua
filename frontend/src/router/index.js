@@ -32,6 +32,12 @@ const routes = [
     component: () => import('../views/cart/Cart.vue')
   },
   {
+    path: '/checkout',
+    name: 'Checkout',
+    component: () => import('../views/checkout/Checkout.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/orders',
     name: 'Orders',
     component: () => import('../views/orders/OrderList.vue'),
@@ -41,6 +47,24 @@ const routes = [
     path: '/seller/dashboard',
     name: 'SellerDashboard',
     component: () => import('../views/seller/Dashboard.vue'),
+    meta: { requiresAuth: true, requiresSeller: true }
+  },
+  {
+    path: '/seller/products',
+    name: 'SellerProducts',
+    component: () => import('../views/seller/Products.vue'),
+    meta: { requiresAuth: true, requiresSeller: true }
+  },
+  {
+    path: '/seller/products/create',
+    name: 'SellerProductCreate',
+    component: () => import('../views/seller/ProductForm.vue'),
+    meta: { requiresAuth: true, requiresSeller: true }
+  },
+  {
+    path: '/seller/products/edit/:id',
+    name: 'SellerProductEdit',
+    component: () => import('../views/seller/ProductForm.vue'),
     meta: { requiresAuth: true, requiresSeller: true }
   },
   {
