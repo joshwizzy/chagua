@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "CHAGUA",
+    "tagline": "Soko Lako la Afrika Mashariki"
+  },
+  "nav": {
+    "home": "Nyumbani",
+    "products": "Bidhaa",
+    "cart": "Kikapu",
+    "orders": "Maagizo",
+    "login": "Ingia",
+    "register": "Jisajili",
+    "logout": "Toka"
+  },
+  "auth": {
+    "login": "Ingia",
+    "register": "Jisajili",
+    "phone": "Nambari ya Simu",
+    "pin": "PIN",
+    "email": "Barua pepe",
+    "firstName": "Jina la Kwanza",
+    "lastName": "Jina la Mwisho"
+  }
+}

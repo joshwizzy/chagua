@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "CHAGUA",
+    "tagline": "Votre marché est-africain"
+  },
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "cart": "Panier",
+    "orders": "Commandes",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "phone": "Numéro de téléphone",
+    "pin": "PIN",
+    "email": "Email",
+    "firstName": "Prénom",
+    "lastName": "Nom"
+  }
+}
