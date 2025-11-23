@@ -1,122 +1,182 @@
 <template>
-  <div class="dashboard">
-    <div class="container">
-      <h1>Seller Dashboard</h1>
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
+        <p class="mt-2 text-sm text-gray-600">Manage your products and orders</p>
+      </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📦</div>
-          <div class="stat-content">
-            <h3>Total Products</h3>
-            <p class="stat-value">{{ stats.totalProducts }}</p>
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Products -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 text-4xl mr-4">📦</div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Products</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ stats.totalProducts }}</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">🛒</div>
-          <div class="stat-content">
-            <h3>Total Orders</h3>
-            <p class="stat-value">{{ stats.totalOrders }}</p>
+
+        <!-- Total Orders -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 text-4xl mr-4">🛒</div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Orders</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ stats.totalOrders }}</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">⏳</div>
-          <div class="stat-content">
-            <h3>Pending Orders</h3>
-            <p class="stat-value">{{ stats.pendingOrders }}</p>
+
+        <!-- Pending Orders -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 text-4xl mr-4">⏳</div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Pending Orders</p>
+                <p class="mt-1 text-3xl font-bold text-yellow-600">{{ stats.pendingOrders }}</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-content">
-            <h3>Total Revenue</h3>
-            <p class="stat-value">{{ formatPrice(stats.totalRevenue) }}</p>
+
+        <!-- Total Revenue -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 text-4xl mr-4">💰</div>
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Revenue</p>
+                <p class="mt-1 text-3xl font-bold text-green-600">{{ formatPrice(stats.totalRevenue) }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="dashboard-sections">
-        <section class="dashboard-section">
-          <div class="section-header">
-            <h2>Recent Orders</h2>
-            <router-link to="/seller/orders" class="link">View All →</router-link>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Recent Orders -->
+        <div class="lg:col-span-2">
+          <div class="card">
+            <div class="card-header flex justify-between items-center">
+              <h2 class="text-lg font-semibold text-gray-900">Recent Orders</h2>
+              <router-link to="/seller/orders" class="text-sm font-medium text-primary-600 hover:text-primary-700">
+                View All →
+              </router-link>
+            </div>
+            <div class="card-body">
+              <div v-if="loading" class="flex justify-center py-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+              </div>
+
+              <div v-else-if="recentOrders.length === 0" class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                <p class="mt-2 text-sm text-gray-500">No orders yet</p>
+              </div>
+
+              <div v-else class="space-y-3">
+                <div v-for="order in recentOrders" :key="order.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div class="flex-1">
+                    <p class="font-semibold text-gray-900">#{{ order.tracking_number }}</p>
+                    <p class="text-sm text-gray-600">{{ order.buyer_name }}</p>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span :class="[
+                      'status-badge',
+                      `status-${order.status.toLowerCase()}`
+                    ]">
+                      {{ order.status }}
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ formatPrice(order.total_amount) }}</span>
+                  </div>
+                  <div class="ml-4">
+                    <button
+                      v-if="order.status === 'PENDING'"
+                      @click="confirmOrder(order.id)"
+                      class="btn btn-primary btn-sm"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      v-if="order.status === 'CONFIRMED'"
+                      @click="markAsShipped(order.id)"
+                      class="btn btn-success btn-sm"
+                    >
+                      Mark Shipped
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div v-if="loading" class="loading">Loading...</div>
-
-          <div v-else-if="recentOrders.length === 0" class="placeholder">
-            No orders yet
+          <!-- Quick Stats -->
+          <div class="card mt-8">
+            <div class="card-header">
+              <h2 class="text-lg font-semibold text-gray-900">Quick Stats</h2>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Active Products</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ stats.activeProducts }}</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Out of Stock</p>
+                  <p class="text-2xl font-bold text-red-600">{{ stats.outOfStockProducts }}</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Avg. Order Value</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ formatPrice(stats.avgOrderValue) }}</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <p class="text-sm text-gray-600">Total Views</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ stats.totalViews }}</p>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <div v-else class="orders-list">
-            <div v-for="order in recentOrders" :key="order.id" class="order-item">
-              <div class="order-info">
-                <strong>#{{ order.tracking_number }}</strong>
-                <span class="order-buyer">{{ order.buyer_name }}</span>
-              </div>
-              <div class="order-meta">
-                <span :class="['status', order.status.toLowerCase()]">{{ order.status }}</span>
-                <span class="order-amount">{{ formatPrice(order.total_amount) }}</span>
-              </div>
-              <div class="order-actions">
-                <button
-                  v-if="order.status === 'PENDING'"
-                  @click="confirmOrder(order.id)"
-                  class="btn-small btn-confirm"
+        <!-- My Products -->
+        <div class="lg:col-span-1">
+          <div class="card">
+            <div class="card-header flex justify-between items-center">
+              <h2 class="text-lg font-semibold text-gray-900">My Products</h2>
+              <router-link to="/seller/products" class="text-sm font-medium text-primary-600 hover:text-primary-700">
+                Manage →
+              </router-link>
+            </div>
+            <div class="card-body">
+              <div class="space-y-3">
+                <router-link
+                  to="/seller/products/create"
+                  class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all group"
                 >
-                  Confirm
-                </button>
-                <button
-                  v-if="order.status === 'CONFIRMED'"
-                  @click="markAsShipped(order.id)"
-                  class="btn-small btn-ship"
+                  <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">+</div>
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">Add New Product</span>
+                </router-link>
+                <router-link
+                  to="/seller/products"
+                  class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all group"
                 >
-                  Mark as Shipped
-                </button>
+                  <div class="text-4xl mb-2">📋</div>
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">View All Products</span>
+                </router-link>
               </div>
             </div>
           </div>
-        </section>
-
-        <section class="dashboard-section">
-          <div class="section-header">
-            <h2>My Products</h2>
-            <router-link to="/seller/products" class="link">Manage Products →</router-link>
-          </div>
-
-          <div class="quick-actions">
-            <router-link to="/seller/products/create" class="action-card">
-              <div class="action-icon">+</div>
-              <span>Add New Product</span>
-            </router-link>
-            <router-link to="/seller/products" class="action-card">
-              <div class="action-icon">📋</div>
-              <span>View All Products</span>
-            </router-link>
-          </div>
-        </section>
-
-        <section class="dashboard-section">
-          <h2>Quick Stats</h2>
-
-          <div class="quick-stats">
-            <div class="quick-stat-item">
-              <span class="label">Active Products:</span>
-              <span class="value">{{ stats.activeProducts }}</span>
-            </div>
-            <div class="quick-stat-item">
-              <span class="label">Out of Stock:</span>
-              <span class="value">{{ stats.outOfStockProducts }}</span>
-            </div>
-            <div class="quick-stat-item">
-              <span class="label">Avg. Order Value:</span>
-              <span class="value">{{ formatPrice(stats.avgOrderValue) }}</span>
-            </div>
-            <div class="quick-stat-item">
-              <span class="label">Total Views:</span>
-              <span class="value">{{ stats.totalViews }}</span>
-            </div>
-          </div>
-        </section>
+        </div>
       </div>
     </div>
   </div>
@@ -188,7 +248,7 @@ async function fetchRecentOrders() {
 
 async function confirmOrder(orderId) {
   try {
-    await api.post(`/orders/${orderId}/status/`, {
+    await api.put(`/orders/${orderId}/status/`, {
       status: 'CONFIRMED'
     })
     await fetchRecentOrders()
@@ -200,7 +260,7 @@ async function confirmOrder(orderId) {
 
 async function markAsShipped(orderId) {
   try {
-    await api.post(`/orders/${orderId}/status/`, {
+    await api.put(`/orders/${orderId}/status/`, {
       status: 'SHIPPED'
     })
     await fetchRecentOrders()
@@ -218,250 +278,3 @@ const formatPrice = (price) => {
   }).format(price)
 }
 </script>
-
-<style scoped>
-.dashboard {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-}
-
-.stat-content h3 {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #667eea;
-  margin: 0;
-}
-
-.dashboard-sections {
-  display: grid;
-  gap: 2rem;
-}
-
-.dashboard-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.section-header h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0;
-}
-
-.link {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-.loading, .placeholder {
-  color: #999;
-  padding: 2rem;
-  text-align: center;
-}
-
-.orders-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.order-item {
-  display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid #eee;
-  border-radius: 0.5rem;
-  align-items: center;
-}
-
-.order-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.order-buyer {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.order-meta {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.status.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status.confirmed {
-  background: #dbeafe;
-  color: #1e3a8a;
-}
-
-.status.shipped {
-  background: #ddd6fe;
-  color: #5b21b6;
-}
-
-.status.delivered {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.order-amount {
-  font-weight: 600;
-  color: #667eea;
-}
-
-.order-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-.btn-small {
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-confirm {
-  background: #667eea;
-  color: white;
-}
-
-.btn-confirm:hover {
-  background: #5568d3;
-}
-
-.btn-ship {
-  background: #10b981;
-  color: white;
-}
-
-.btn-ship:hover {
-  background: #059669;
-}
-
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.action-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  border: 2px dashed #ddd;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  color: #333;
-  transition: all 0.2s;
-}
-
-.action-card:hover {
-  border-color: #667eea;
-  background: #f0f4ff;
-}
-
-.action-icon {
-  font-size: 2rem;
-}
-
-.quick-stats {
-  display: grid;
-  gap: 1rem;
-}
-
-.quick-stat-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.75rem;
-  background: #f9f9f9;
-  border-radius: 0.25rem;
-}
-
-.quick-stat-item .label {
-  color: #666;
-}
-
-.quick-stat-item .value {
-  font-weight: 600;
-  color: #333;
-}
-</style>
