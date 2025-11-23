@@ -1,51 +1,93 @@
 <template>
-  <div class="cart-page">
-    <div class="container">
-      <h1>Shopping Cart</h1>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
-      <div v-if="loading" class="loading">Loading cart...</div>
-
-      <div v-else-if="!cart || items.length === 0" class="empty-cart">
-        <p>Your cart is empty</p>
-        <router-link to="/products" class="btn btn-primary">Continue Shopping</router-link>
+      <div v-if="loading" class="text-center py-16 bg-white rounded-lg">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading cart...</p>
       </div>
 
-      <div v-else class="cart-layout">
-        <div class="cart-items">
-          <div v-for="item in items" :key="item.id" class="cart-item">
-            <img :src="item.product_image" :alt="item.product_name" />
-            <div class="item-details">
-              <h3>{{ item.product_name }}</h3>
-              <p class="price">{{ formatPrice(item.unit_price) }}</p>
-              <div class="quantity-control">
-                <button @click="updateQuantity(item.id, item.quantity - 1)">-</button>
-                <span>{{ item.quantity }}</span>
-                <button @click="updateQuantity(item.id, item.quantity + 1)">+</button>
+      <div v-else-if="!cart || items.length === 0" class="text-center py-16 bg-white rounded-lg">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+        <p class="mt-4 text-xl text-gray-600">Your cart is empty</p>
+        <router-link to="/products" class="btn btn-primary mt-8 inline-block">
+          Continue Shopping
+        </router-link>
+      </div>
+
+      <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2">
+          <div class="card">
+            <div class="card-body divide-y divide-gray-200">
+              <div v-for="item in items" :key="item.id" class="flex gap-6 py-6 first:pt-0">
+                <img
+                  :src="item.product_image"
+                  :alt="item.product_name"
+                  class="w-28 h-28 object-cover rounded-lg flex-shrink-0"
+                />
+                <div class="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900">{{ item.product_name }}</h3>
+                    <p class="mt-1 text-primary-600 font-semibold">{{ formatPrice(item.unit_price) }}</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button
+                      @click="updateQuantity(item.id, item.quantity - 1)"
+                      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                    >
+                      -
+                    </button>
+                    <span class="w-12 text-center font-semibold">{{ item.quantity }}</span>
+                    <button
+                      @click="updateQuantity(item.id, item.quantity + 1)"
+                      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end justify-between">
+                  <p class="text-lg font-semibold text-gray-900">{{ formatPrice(item.subtotal) }}</p>
+                  <button
+                    @click="removeItem(item.id)"
+                    class="text-red-600 hover:text-red-800 underline text-sm font-medium"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="item-actions">
-              <p class="subtotal">{{ formatPrice(item.subtotal) }}</p>
-              <button @click="removeItem(item.id)" class="remove-btn">Remove</button>
             </div>
           </div>
         </div>
 
-        <div class="cart-summary">
-          <h2>Order Summary</h2>
-          <div class="summary-row">
-            <span>Items ({{ itemsCount }})</span>
-            <span>{{ formatPrice(total) }}</span>
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div class="card sticky top-8">
+            <div class="card-body">
+              <h2 class="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
+
+              <div class="flex justify-between mb-4 text-gray-600">
+                <span>Items ({{ itemsCount }})</span>
+                <span>{{ formatPrice(total) }}</span>
+              </div>
+
+              <div class="flex justify-between pt-4 border-t-2 border-gray-200 text-lg font-semibold text-gray-900 mb-6">
+                <span>Total</span>
+                <span>{{ formatPrice(total) }}</span>
+              </div>
+
+              <button @click="proceedToCheckout" class="btn btn-primary w-full mb-3">
+                Proceed to Checkout
+              </button>
+              <button @click="handleClearCart" class="btn btn-secondary w-full">
+                Clear Cart
+              </button>
+            </div>
           </div>
-          <div class="summary-total">
-            <span>Total</span>
-            <span>{{ formatPrice(total) }}</span>
-          </div>
-          <button @click="proceedToCheckout" class="btn btn-primary btn-full">
-            Proceed to Checkout
-          </button>
-          <button @click="handleClearCart" class="btn btn-secondary btn-full">
-            Clear Cart
-          </button>
         </div>
       </div>
     </div>
@@ -99,207 +141,3 @@ function proceedToCheckout() {
   router.push('/checkout')
 }
 </script>
-
-<style scoped>
-.cart-page {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.loading, .empty-cart {
-  text-align: center;
-  padding: 4rem;
-  background: white;
-  border-radius: 1rem;
-}
-
-.empty-cart p {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.cart-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-@media (max-width: 768px) {
-  .cart-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.cart-items {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-}
-
-.cart-item {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.cart-item:last-child {
-  border-bottom: none;
-}
-
-.cart-item img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-}
-
-.item-details {
-  flex: 1;
-}
-
-.item-details h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.price {
-  color: #667eea;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.quantity-control button {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 1.2rem;
-}
-
-.quantity-control button:hover {
-  background: #f5f5f5;
-}
-
-.quantity-control span {
-  min-width: 40px;
-  text-align: center;
-  font-weight: 600;
-}
-
-.item-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.subtotal {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.remove-btn {
-  background: none;
-  border: none;
-  color: #dc2626;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-}
-
-.remove-btn:hover {
-  color: #991b1b;
-}
-
-.cart-summary {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  height: fit-content;
-}
-
-.cart-summary h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  color: #666;
-}
-
-.summary-total {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 2px solid #eee;
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.btn {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-full {
-  width: 100%;
-  margin-bottom: 0.75rem;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-secondary {
-  background: white;
-  border: 2px solid #ddd;
-  color: #666;
-}
-
-.btn-secondary:hover {
-  border-color: #999;
-  color: #333;
-}
-</style>
