@@ -1,67 +1,112 @@
 <template>
-  <div class="seller-products">
-    <div class="container">
-      <div class="page-header">
-        <h1>My Products</h1>
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">My Products</h1>
+          <p class="mt-2 text-sm text-gray-600">Manage your product listings</p>
+        </div>
         <router-link to="/seller/products/create" class="btn btn-primary">
           + Add New Product
         </router-link>
       </div>
 
-      <div v-if="loading" class="loading">Loading products...</div>
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
 
-      <div v-else-if="products.length === 0" class="empty">
-        <p>You haven't added any products yet</p>
-        <router-link to="/seller/products/create" class="btn btn-primary">
+      <!-- Empty State -->
+      <div v-else-if="products.length === 0" class="text-center py-12">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No products yet</h3>
+        <p class="mt-2 text-gray-600">Get started by adding your first product</p>
+        <router-link to="/seller/products/create" class="btn btn-primary mt-6 inline-block">
           Add Your First Product
         </router-link>
       </div>
 
-      <div v-else class="products-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Views</th>
-              <th>Sales</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="product in products" :key="product.id">
-              <td>
-                <div class="product-info">
-                  <img v-if="product.primary_image" :src="product.primary_image" :alt="product.name" />
-                  <span>{{ product.name }}</span>
-                </div>
-              </td>
-              <td>{{ product.category_name }}</td>
-              <td>{{ formatPrice(product.price) }}</td>
-              <td>{{ product.stock_quantity }}</td>
-              <td>
-                <span :class="['status-badge', product.availability.toLowerCase()]">
-                  {{ product.availability.replace('_', ' ') }}
-                </span>
-              </td>
-              <td>{{ product.views_count }}</td>
-              <td>{{ product.sales_count }}</td>
-              <td>
-                <div class="actions">
-                  <router-link :to="`/seller/products/edit/${product.id}`" class="btn-small btn-edit">
-                    Edit
-                  </router-link>
-                  <button @click="handleDelete(product.id)" class="btn-small btn-delete">
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Products Table -->
+      <div v-else class="card">
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Views</th>
+                <th>Sales</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="product in products" :key="product.id">
+                <td>
+                  <div class="flex items-center space-x-3">
+                    <img
+                      v-if="product.primary_image"
+                      :src="product.primary_image"
+                      :alt="product.name"
+                      class="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div v-else class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                    <span class="font-medium text-gray-900">{{ product.name }}</span>
+                  </div>
+                </td>
+                <td class="text-gray-600">{{ product.category_name || 'Uncategorized' }}</td>
+                <td class="font-semibold text-gray-900">{{ formatPrice(product.price) }}</td>
+                <td>
+                  <span :class="[
+                    'px-2 py-1 rounded text-sm font-medium',
+                    product.stock_quantity > 10 ? 'bg-green-100 text-green-800' :
+                    product.stock_quantity > 0 ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  ]">
+                    {{ product.stock_quantity }}
+                  </span>
+                </td>
+                <td>
+                  <span :class="[
+                    'status-badge',
+                    product.availability === 'IN_STOCK' ? 'badge-success' :
+                    product.availability === 'LOW_STOCK' ? 'badge-warning' :
+                    'badge-danger'
+                  ]">
+                    {{ product.availability.replace('_', ' ') }}
+                  </span>
+                </td>
+                <td class="text-gray-600">{{ product.views_count }}</td>
+                <td class="text-gray-600">{{ product.sales_count }}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <router-link
+                      :to="`/seller/products/edit/${product.id}`"
+                      class="btn btn-primary btn-sm"
+                    >
+                      Edit
+                    </router-link>
+                    <button
+                      @click="handleDelete(product.id)"
+                      class="btn btn-danger btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -91,17 +136,20 @@ async function fetchProducts() {
 }
 
 async function handleDelete(productId) {
-  if (confirm('Are you sure you want to delete this product?')) {
-    try {
-      await api.delete(`/products/seller/products/${productId}/`)
-      await fetchProducts()
-    } catch (error) {
-      alert('Failed to delete product')
-    }
+  if (!confirm('Are you sure you want to delete this product?')) {
+    return
+  }
+
+  try {
+    await api.delete(`/products/seller/products/${productId}/`)
+    await fetchProducts()
+  } catch (error) {
+    console.error('Failed to delete product:', error)
+    alert('Failed to delete product')
   }
 }
 
-const formatPrice = (price) => {
+function formatPrice(price) {
   return new Intl.NumberFormat('en-UG', {
     style: 'currency',
     currency: 'UGX',
@@ -109,150 +157,3 @@ const formatPrice = (price) => {
   }).format(price)
 }
 </script>
-
-<style scoped>
-.seller-products {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: #333;
-}
-
-.loading, .empty {
-  text-align: center;
-  padding: 4rem;
-  background: white;
-  border-radius: 0.5rem;
-}
-
-.empty p {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.products-table {
-  background: white;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: #f9f9f9;
-}
-
-th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #eee;
-}
-
-td {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.product-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.product-info img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 0.25rem;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.status-badge.in_stock {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status-badge.out_of_stock {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn, .btn-small {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 0.75rem 1.5rem;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-edit {
-  background: #667eea;
-  color: white;
-}
-
-.btn-edit:hover {
-  background: #5568d3;
-}
-
-.btn-delete {
-  background: transparent;
-  border: 1px solid #dc2626;
-  color: #dc2626;
-}
-
-.btn-delete:hover {
-  background: #dc2626;
-  color: white;
-}
-</style>
