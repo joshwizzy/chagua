@@ -1,58 +1,173 @@
 <template>
-  <div class="dashboard">
-    <div class="container">
-      <h1>Admin Dashboard</h1>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Total Users</h3>
-          <p class="stat-value">{{ stats.totalUsers }}</p>
-          <small>{{ stats.buyers }} Buyers, {{ stats.sellers }} Sellers</small>
-        </div>
-        <div class="stat-card">
-          <h3>Total Products</h3>
-          <p class="stat-value">{{ stats.totalProducts }}</p>
-          <small>{{ stats.activeProducts }} Active</small>
-        </div>
-        <div class="stat-card">
-          <h3>Total Orders</h3>
-          <p class="stat-value">{{ stats.totalOrders }}</p>
-          <small>{{ stats.pendingOrders }} Pending</small>
-        </div>
-        <div class="stat-card">
-          <h3>Platform Revenue</h3>
-          <p class="stat-value">{{ formatPrice(stats.totalRevenue) }}</p>
-          <small>From subscriptions</small>
-        </div>
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <p class="mt-2 text-sm text-gray-600">Welcome back! Here's what's happening with CHAGUA today.</p>
       </div>
 
-      <div class="dashboard-sections">
-        <section class="dashboard-section">
-          <h2>Recent Activity</h2>
-          <div v-if="loading" class="loading">Loading...</div>
-          <div v-else-if="recentActivity.length === 0" class="placeholder">
-            No recent activity
-          </div>
-          <div v-else class="activity-list">
-            <div v-for="activity in recentActivity" :key="activity.id" class="activity-item">
-              <div class="activity-icon">{{ activity.icon }}</div>
-              <div class="activity-details">
-                <p><strong>{{ activity.title }}</strong></p>
-                <small>{{ activity.time }}</small>
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Users -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Users</p>
+                <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.totalUsers }}</p>
+                <p class="mt-1 text-sm text-gray-500">{{ stats.buyers }} Buyers · {{ stats.sellers }} Sellers</p>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section class="dashboard-section">
-          <h2>Quick Actions</h2>
-          <div class="quick-actions">
-            <button class="action-btn" @click="router.push('/admin/users')">View All Users</button>
-            <button class="action-btn" @click="router.push('/admin/products')">View All Products</button>
-            <button class="action-btn" @click="router.push('/admin/orders')">View All Orders</button>
-            <button class="action-btn" @click="router.push('/admin/subscriptions')">Manage Subscriptions</button>
+        <!-- Total Products -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Products</p>
+                <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.totalProducts }}</p>
+                <p class="mt-1 text-sm text-gray-500">{{ stats.activeProducts }} Active</p>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Orders</p>
+                <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.totalOrders }}</p>
+                <p class="mt-1 text-sm text-gray-500">{{ stats.pendingOrders }} Pending</p>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform Revenue -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Subscription Revenue</p>
+                <p class="mt-2 text-3xl font-bold text-gray-900">{{ formatPrice(stats.totalRevenue) }}</p>
+                <p class="mt-1 text-sm text-gray-500">From subscriptions</p>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Recent Activity -->
+        <div class="lg:col-span-2">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+            </div>
+            <div class="card-body">
+              <div v-if="loading" class="flex justify-center py-12">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+              </div>
+              <div v-else-if="recentActivity.length === 0" class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <p class="mt-2 text-sm text-gray-500">No recent activity</p>
+              </div>
+              <div v-else class="space-y-4">
+                <div v-for="activity in recentActivity" :key="activity.id" class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div class="flex-shrink-0 text-2xl">{{ activity.icon }}</div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900">{{ activity.title }}</p>
+                    <p class="text-xs text-gray-500 mt-1">{{ activity.time }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="lg:col-span-1">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+            </div>
+            <div class="card-body">
+              <div class="space-y-3">
+                <button
+                  @click="router.push('/admin/users')"
+                  class="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-primary-500 transition-all group"
+                >
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">View All Users</span>
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+                <button
+                  @click="router.push('/admin/products')"
+                  class="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-primary-500 transition-all group"
+                >
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">View All Products</span>
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+                <button
+                  @click="router.push('/admin/orders')"
+                  class="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-primary-500 transition-all group"
+                >
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">View All Orders</span>
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+                <button
+                  @click="router.push('/admin/subscriptions')"
+                  class="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-primary-500 transition-all group"
+                >
+                  <span class="text-sm font-medium text-gray-700 group-hover:text-primary-600">Manage Subscriptions</span>
+                  <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,7 +179,6 @@ import { useRouter } from 'vue-router'
 import api from '../../services/api'
 
 const router = useRouter()
-
 const loading = ref(true)
 const recentActivity = ref([])
 
@@ -81,7 +195,6 @@ const stats = ref({
 
 onMounted(async () => {
   try {
-    // Fetch admin statistics from backend
     const response = await api.get('/users/admin/statistics/')
     const data = response.data
 
@@ -96,7 +209,6 @@ onMounted(async () => {
       totalRevenue: data.revenue.subscriptions
     }
 
-    // Build recent activity from the data
     recentActivity.value = []
     if (data.recent_activity.users > 0) {
       recentActivity.value.push({
@@ -137,124 +249,3 @@ const formatPrice = (price) => {
   }).format(price)
 }
 </script>
-
-<style scoped>
-.dashboard {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.stat-card h3 {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #667eea;
-  margin: 0.5rem 0;
-}
-
-.stat-card small {
-  color: #999;
-}
-
-.dashboard-sections {
-  display: grid;
-  gap: 2rem;
-}
-
-.dashboard-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.dashboard-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.loading, .placeholder {
-  color: #999;
-  padding: 2rem;
-  text-align: center;
-}
-
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.activity-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 0.5rem;
-}
-
-.activity-icon {
-  font-size: 1.5rem;
-}
-
-.activity-details p {
-  margin: 0 0 0.25rem 0;
-}
-
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.action-btn {
-  padding: 1rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.action-btn:hover {
-  background: #5568d3;
-  transform: translateY(-2px);
-}
-</style>
