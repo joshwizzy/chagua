@@ -1,120 +1,141 @@
 <template>
-  <div class="product-form-page">
-    <div class="container">
-      <h1>{{ isEdit ? 'Edit Product' : 'Add New Product' }}</h1>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">{{ isEdit ? 'Edit Product' : 'Add New Product' }}</h1>
 
-      <form @submit.prevent="handleSubmit" class="product-form">
-        <div class="form-section">
-          <h2>Basic Information</h2>
+      <form @submit.prevent="handleSubmit" class="card">
+        <div class="card-body space-y-8">
+          <!-- Basic Information -->
+          <div class="pb-8 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Basic Information</h2>
 
-          <div class="form-group">
-            <label>Product Name*</label>
-            <input v-model="form.name" type="text" required />
-          </div>
+            <div class="space-y-6">
+              <div>
+                <label class="form-label">Product Name*</label>
+                <input v-model="form.name" type="text" required class="form-input" />
+              </div>
 
-          <div class="form-group">
-            <label>Description*</label>
-            <textarea v-model="form.description" rows="5" required></textarea>
-          </div>
+              <div>
+                <label class="form-label">Description*</label>
+                <textarea v-model="form.description" rows="5" required class="form-input"></textarea>
+              </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Category*</label>
-              <select v-model="form.category" required>
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                  {{ cat.name }}
-                </option>
-              </select>
-            </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="form-label">Category*</label>
+                  <select v-model="form.category" required class="form-select">
+                    <option value="">Select Category</option>
+                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                      {{ cat.name }}
+                    </option>
+                  </select>
+                </div>
 
-            <div class="form-group">
-              <label>Price (UGX)*</label>
-              <input v-model.number="form.price" type="number" min="0" step="100" required />
-            </div>
-          </div>
+                <div>
+                  <label class="form-label">Price (UGX)*</label>
+                  <input v-model.number="form.price" type="number" min="0" step="100" required class="form-input" />
+                </div>
+              </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Stock Quantity*</label>
-              <input v-model.number="form.stock_quantity" type="number" min="0" required />
-            </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="form-label">Stock Quantity*</label>
+                  <input v-model.number="form.stock_quantity" type="number" min="0" required class="form-input" />
+                </div>
 
-            <div class="form-group">
-              <label>Availability*</label>
-              <select v-model="form.availability" required>
-                <option value="IN_STOCK">In Stock</option>
-                <option value="OUT_OF_STOCK">Out of Stock</option>
-                <option value="PRE_ORDER">Pre-order</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2>Product Images</h2>
-          <div class="image-upload">
-            <input
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              multiple
-              @change="handleImageUpload"
-              style="display: none"
-            />
-            <button type="button" @click="$refs.fileInput.click()" class="btn btn-secondary">
-              Choose Images
-            </button>
-            <p class="help-text">Upload up to 5 images (JPG, PNG, max 5MB each)</p>
-
-            <div v-if="imagePreviews.length > 0" class="image-previews">
-              <div v-for="(preview, index) in imagePreviews" :key="index" class="image-preview">
-                <img :src="preview" alt="Preview" />
-                <button type="button" @click="removeImage(index)" class="remove-image">×</button>
+                <div>
+                  <label class="form-label">Availability*</label>
+                  <select v-model="form.availability" required class="form-select">
+                    <option value="IN_STOCK">In Stock</option>
+                    <option value="OUT_OF_STOCK">Out of Stock</option>
+                    <option value="PRE_ORDER">Pre-order</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-section">
-          <h2>SEO (Optional)</h2>
+          <!-- Product Images -->
+          <div class="pb-8 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Product Images</h2>
 
-          <div class="form-group">
-            <label>Meta Title</label>
-            <input v-model="form.meta_title" type="text" />
+            <div class="space-y-4">
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                multiple
+                @change="handleImageUpload"
+                class="hidden"
+              />
+              <button type="button" @click="$refs.fileInput.click()" class="btn btn-secondary">
+                Choose Images
+              </button>
+              <p class="text-sm text-gray-600">Upload up to 5 images (JPG, PNG, max 5MB each)</p>
+
+              <div v-if="imagePreviews.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <div v-for="(preview, index) in imagePreviews" :key="index" class="relative aspect-square rounded-lg overflow-hidden border-2 border-gray-200">
+                  <img :src="preview" alt="Preview" class="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    @click="removeImage(index)"
+                    class="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold flex items-center justify-center text-xl leading-none transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Meta Description</label>
-            <textarea v-model="form.meta_description" rows="3"></textarea>
+          <!-- SEO (Optional) -->
+          <div class="pb-8 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">SEO (Optional)</h2>
+
+            <div class="space-y-6">
+              <div>
+                <label class="form-label">Meta Title</label>
+                <input v-model="form.meta_title" type="text" class="form-input" />
+              </div>
+
+              <div>
+                <label class="form-label">Meta Description</label>
+                <textarea v-model="form.meta_description" rows="3" class="form-input"></textarea>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="form-section">
-          <h2>Status</h2>
+          <!-- Status -->
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Status</h2>
 
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="form.is_active" />
-            Product is active (visible to buyers)
-          </label>
+            <div class="space-y-3">
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" v-model="form.is_active" class="w-4 h-4 text-primary-600 rounded focus:ring-2 focus:ring-primary-500" />
+                <span class="text-sm font-medium text-gray-700">Product is active (visible to buyers)</span>
+              </label>
 
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="form.is_featured" />
-            Feature this product on homepage
-          </label>
-        </div>
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" v-model="form.is_featured" class="w-4 h-4 text-primary-600 rounded focus:ring-2 focus:ring-primary-500" />
+                <span class="text-sm font-medium text-gray-700">Feature this product on homepage</span>
+              </label>
+            </div>
+          </div>
 
-        <div v-if="error" class="error-message">
-          {{ error }}
-        </div>
+          <!-- Error Message -->
+          <div v-if="error" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+            {{ error }}
+          </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" :disabled="submitting">
-            {{ submitting ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product') }}
-          </button>
-          <router-link to="/seller/products" class="btn btn-secondary">
-            Cancel
-          </router-link>
+          <!-- Form Actions -->
+          <div class="flex gap-4 pt-4">
+            <button type="submit" class="btn btn-primary" :disabled="submitting">
+              {{ submitting ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product') }}
+            </button>
+            <router-link to="/seller/products" class="btn btn-secondary">
+              Cancel
+            </router-link>
+          </div>
         </div>
       </form>
     </div>
@@ -251,191 +272,3 @@ async function handleSubmit() {
   }
 }
 </script>
-
-<style scoped>
-.product-form-page {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.product-form {
-  background: white;
-  border-radius: 0.5rem;
-  padding: 2rem;
-}
-
-.form-section {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #eee;
-}
-
-.form-section:last-of-type {
-  border-bottom: none;
-}
-
-.form-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.image-upload {
-  margin-top: 1rem;
-}
-
-.help-text {
-  margin-top: 0.5rem;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.image-previews {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.image-preview {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 2px solid #eee;
-}
-
-.image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.remove-image {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(220, 38, 38, 0.9);
-  color: white;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: auto;
-  cursor: pointer;
-}
-
-.error-message {
-  padding: 1rem;
-  background: #fee;
-  color: #c33;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: white;
-  border: 2px solid #ddd;
-  color: #666;
-}
-
-.btn-secondary:hover {
-  border-color: #999;
-}
-</style>
