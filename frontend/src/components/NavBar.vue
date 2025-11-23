@@ -1,39 +1,54 @@
 <template>
-  <nav class="navbar">
-    <div class="container">
-      <router-link to="/" class="logo">
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center flex-wrap gap-4">
+      <router-link to="/" class="text-2xl font-bold text-primary-500 hover:text-primary-600 transition-colors">
         {{ $t('app.name') }}
       </router-link>
 
-      <div class="nav-links">
-        <router-link to="/">{{ $t('nav.home') }}</router-link>
-        <router-link to="/products">{{ $t('nav.products') }}</router-link>
+      <div class="flex items-center gap-4 md:gap-8 flex-wrap text-sm md:text-base">
+        <router-link to="/" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
+          {{ $t('nav.home') }}
+        </router-link>
+        <router-link to="/products" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
+          {{ $t('nav.products') }}
+        </router-link>
 
         <template v-if="auth.isAuthenticated">
-          <router-link to="/cart" class="cart-link">
+          <router-link to="/cart" class="relative text-gray-700 hover:text-primary-500 font-medium transition-colors">
             {{ $t('nav.cart') }}
-            <span v-if="cart.itemsCount > 0" class="cart-badge">{{ cart.itemsCount }}</span>
+            <span v-if="cart.itemsCount > 0" class="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+              {{ cart.itemsCount }}
+            </span>
           </router-link>
-          <router-link to="/orders">{{ $t('nav.orders') }}</router-link>
+          <router-link to="/orders" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
+            {{ $t('nav.orders') }}
+          </router-link>
 
-          <router-link v-if="auth.isSeller" to="/seller/dashboard">
+          <router-link v-if="auth.isSeller" to="/seller/dashboard" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
             Seller Dashboard
           </router-link>
-          <router-link v-if="auth.isAdmin" to="/admin/dashboard">
+          <router-link v-if="auth.isAdmin" to="/admin/dashboard" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
             Admin Dashboard
           </router-link>
 
-          <div class="user-menu">
-            <span>{{ auth.user?.first_name }}</span>
-            <button @click="handleLogout" class="logout-btn">
+          <div class="flex items-center gap-3">
+            <span class="text-gray-900 font-medium">{{ auth.user?.first_name }}</span>
+            <button
+              @click="handleLogout"
+              class="border border-gray-300 hover:border-red-600 hover:text-red-600 px-3 py-1.5 rounded text-sm font-medium transition-all"
+            >
               {{ $t('nav.logout') }}
             </button>
           </div>
         </template>
 
         <template v-else>
-          <router-link to="/login">{{ $t('nav.login') }}</router-link>
-          <router-link to="/register" class="btn-register">{{ $t('nav.register') }}</router-link>
+          <router-link to="/login" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">
+            {{ $t('nav.login') }}
+          </router-link>
+          <router-link to="/register" class="btn btn-primary px-6 py-2">
+            {{ $t('nav.register') }}
+          </router-link>
         </template>
       </div>
     </div>
@@ -62,108 +77,3 @@ async function handleLogout() {
   router.push('/login')
 }
 </script>
-
-<style scoped>
-.navbar {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #667eea;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.2s;
-  position: relative;
-}
-
-.nav-links a:hover {
-  color: #667eea;
-}
-
-.cart-link {
-  position: relative;
-}
-
-.cart-badge {
-  position: absolute;
-  top: -8px;
-  right: -12px;
-  background: #dc2626;
-  color: white;
-  font-size: 0.7rem;
-  padding: 0.15rem 0.4rem;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logout-btn {
-  background: transparent;
-  border: 1px solid #ddd;
-  padding: 0.4rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.logout-btn:hover {
-  border-color: #dc2626;
-  color: #dc2626;
-}
-
-.btn-register {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white !important;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-}
-
-.btn-register:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-@media (max-width: 768px) {
-  .nav-links {
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .nav-links a {
-    font-size: 0.9rem;
-  }
-}
-</style>
