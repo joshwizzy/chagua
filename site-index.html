@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAGUA - Site Index</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#E85D04',
+              dark: '#B64909',
+              light: '#FF7B21'
+            },
+            secondary: {
+              DEFAULT: '#2B2D42',
+              light: '#3A3C55'
+            },
+            accent: {
+              DEFAULT: '#4CC9F0',
+              light: '#72D9FF'
+            },
+            neutral: {
+              light: '#F8F7F4',
+              dark: '#1A1A1A'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+  </style>
+</head>
+<body class="bg-neutral-light text-secondary antialiased p-4 lg:p-8">
+  
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-primary mb-4">CHAGUA</h1>
+      <p class="text-xl text-gray-600">East Africa's Marketplace - All Pages</p>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Completed Pages -->
+      <section class="bg-white rounded-2xl p-6 shadow">
+        <h2 class="text-2xl font-bold mb-4 text-primary">✓ Completed Pages</h2>
+        <div class="space-y-3">
+          <a href="chagua-mobile-first.html" class="block p-4 border-2 border-primary/20 rounded-xl hover:border-primary hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Homepage</h3>
+            <p class="text-sm text-gray-600">Main landing page with hero, categories, trending products</p>
+          </a>
+          <a href="product-listing.html" class="block p-4 border-2 border-primary/20 rounded-xl hover:border-primary hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Product Listing</h3>
+            <p class="text-sm text-gray-600">Browse products with filters and sorting</p>
+          </a>
+          <a href="seller-dashboard.html" class="block p-4 border-2 border-accent/20 rounded-xl hover:border-accent hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Seller Dashboard</h3>
+            <p class="text-sm text-gray-600">Complete seller management interface</p>
+          </a>
+          <a href="seller-product-add.html" class="block p-4 border-2 border-accent/20 rounded-xl hover:border-accent hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Product Add/Edit</h3>
+            <p class="text-sm text-gray-600">Add or edit products with images and details</p>
+          </a>
+          <a href="seller-orders.html" class="block p-4 border-2 border-accent/20 rounded-xl hover:border-accent hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Order List</h3>
+            <p class="text-sm text-gray-600">Manage and fulfill customer orders</p>
+          </a>
+          <a href="admin-dashboard.html" class="block p-4 border-2 border-secondary/20 rounded-xl hover:border-secondary hover:shadow-lg transition">
+            <h3 class="font-bold text-lg">Admin Dashboard</h3>
+            <p class="text-sm text-gray-600">Platform administration and management</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Additional Pages Needed -->
+      <section class="bg-gray-50 rounded-2xl p-6">
+        <h2 class="text-2xl font-bold mb-4">📋 Additional Pages (Templates)</h2>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">Product Detail</h3>
+            <p class="text-xs text-gray-600">Individual product page</p>
+          </div>
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">Shopping Cart</h3>
+            <p class="text-xs text-gray-600">Cart with item management</p>
+          </div>
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">Checkout</h3>
+            <p class="text-xs text-gray-600">Payment and delivery</p>
+          </div>
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">Order Confirmation</h3>
+            <p class="text-xs text-gray-600">Success page</p>
+          </div>
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">User Profile</h3>
+            <p class="text-xs text-gray-600">Account management</p>
+          </div>
+          <div class="p-4 bg-white rounded-xl">
+            <h3 class="font-semibold">Order Tracking</h3>
+            <p class="text-xs text-gray-600">Track deliveries</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Design Features -->
+      <section class="bg-primary/10 rounded-2xl p-6">
+        <h2 class="text-2xl font-bold mb-4">🎨 Design Features</h2>
+        <div class="grid md:grid-cols-3 gap-3 text-sm">
+          <div class="bg-white p-3 rounded-lg">✓ Mobile-first responsive</div>
+          <div class="bg-white p-3 rounded-lg">✓ Custom color theme</div>
+          <div class="bg-white p-3 rounded-lg">✓ Unsplash images</div>
+          <div class="bg-white p-3 rounded-lg">✓ No gradients</div>
+          <div class="bg-white p-3 rounded-lg">✓ Tailwind CSS</div>
+          <div class="bg-white p-3 rounded-lg">✓ Clean shadows</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</body>
+</html>

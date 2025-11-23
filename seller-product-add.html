@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product - Seller Dashboard - CHAGUA</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#E85D04',
+              dark: '#B64909',
+              light: '#FF7B21'
+            },
+            secondary: {
+              DEFAULT: '#2B2D42',
+              light: '#3A3C55'
+            },
+            accent: {
+              DEFAULT: '#4CC9F0',
+              light: '#72D9FF'
+            },
+            neutral: {
+              light: '#F8F7F4',
+              dark: '#1A1A1A'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+  </style>
+</head>
+<body class="bg-neutral-light text-secondary antialiased">
+
+  <!-- Top Navigation -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="px-4 lg:px-6 py-3 lg:py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4 lg:gap-6">
+          <button id="sidebarToggle" class="lg:hidden p-2 hover:bg-gray-100 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+          <a href="/" class="text-xl lg:text-2xl font-extrabold text-primary">CHAGUA</a>
+          <span class="hidden lg:inline text-sm text-gray-500">Seller Dashboard</span>
+        </div>
+
+        <div class="flex items-center gap-3 lg:gap-4">
+          <button class="relative p-2 hover:bg-gray-100 rounded-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+          </button>
+          <div class="flex items-center gap-2 lg:gap-3">
+            <div class="hidden lg:block text-right">
+              <p class="text-sm font-semibold">John's Shop</p>
+              <p class="text-xs text-gray-500">Pro Plan</p>
+            </div>
+            <button class="w-8 h-8 lg:w-10 lg:h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+              J
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white shadow-md transform -translate-x-full lg:translate-x-0 transition-transform z-40 overflow-y-auto">
+      <div class="p-6">
+        <nav class="space-y-2">
+          <a href="seller-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary font-semibold">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            Products
+          </a>
+          <a href="seller-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            Orders
+          </a>
+          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            Analytics
+          </a>
+          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Subscription
+          </a>
+          <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Settings
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 lg:p-6">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-sm text-gray-600 mb-4 lg:mb-6">
+        <a href="seller-dashboard.html" class="hover:text-primary">Dashboard</a>
+        <span>/</span>
+        <a href="seller-dashboard.html" class="hover:text-primary">Products</a>
+        <span>/</span>
+        <span class="text-secondary font-semibold">Add New Product</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 lg:mb-8">
+        <div>
+          <h1 class="text-2xl lg:text-3xl font-extrabold text-secondary mb-2">Add New Product</h1>
+          <p class="text-gray-600">Fill in the details below to list your product</p>
+        </div>
+        <a href="seller-dashboard.html" class="text-sm text-gray-600 hover:text-primary flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Products
+        </a>
+      </div>
+
+      <!-- Product Form -->
+      <div class="bg-white rounded-xl lg:rounded-2xl shadow">
+        <form class="p-4 lg:p-6 space-y-6">
+          <!-- Product Images -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-3">Product Images</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4">
+              <!-- Image Upload Slots -->
+              <div class="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center hover:border-primary transition cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="text-xs text-gray-500">Add Image</span>
+                <input type="file" class="hidden" accept="image/*">
+              </div>
+              <div class="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-primary transition cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <input type="file" class="hidden" accept="image/*">
+              </div>
+              <div class="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-primary transition cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <input type="file" class="hidden" accept="image/*">
+              </div>
+              <div class="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-primary transition cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <input type="file" class="hidden" accept="image/*">
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Upload up to 4 images. First image will be the main product image.</p>
+          </div>
+
+          <!-- Product Name -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Product Name *</label>
+            <input type="text" placeholder="e.g., Handmade Leather Bag" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary"
+                   required>
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Category *</label>
+            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary" required>
+              <option value="">Select a category</option>
+              <option value="clothes">Clothes</option>
+              <option value="cosmetics">Cosmetics</option>
+              <option value="shoes">Shoes</option>
+              <option value="jewelry">Jewelry</option>
+              <option value="bags">Bags</option>
+              <option value="gadgets">Gadgets</option>
+              <option value="others">Others</option>
+            </select>
+          </div>
+
+          <!-- Price and Stock -->
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-secondary mb-2">Price (UGX) *</label>
+              <input type="number" placeholder="180000" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary"
+                     required>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-secondary mb-2">Stock Quantity *</label>
+              <input type="number" placeholder="12" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary"
+                     required>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Description *</label>
+            <textarea rows="5" placeholder="Describe your product in detail..."
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary"
+                      required></textarea>
+            <p class="text-xs text-gray-500 mt-2">Include material, dimensions, care instructions, and unique features</p>
+          </div>
+
+          <!-- Product Condition -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Condition</label>
+            <div class="flex flex-wrap gap-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="condition" value="new" class="w-4 h-4 text-primary" checked>
+                <span class="text-sm">New</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="condition" value="like-new" class="w-4 h-4 text-primary">
+                <span class="text-sm">Like New</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="condition" value="used" class="w-4 h-4 text-primary">
+                <span class="text-sm">Used</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Shipping Options -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-3">Shipping Options</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4 text-primary rounded" checked>
+                <span class="text-sm">Seller handles delivery</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4 text-primary rounded">
+                <span class="text-sm">Pickup available</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Variants/Sizes (Optional) -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Variants (Optional)</label>
+            <div class="space-y-3">
+              <div class="flex gap-2">
+                <input type="text" placeholder="Size/Color" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary text-sm">
+                <input type="text" placeholder="Options (S, M, L)" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary text-sm">
+                <button type="button" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label class="block text-sm font-semibold text-secondary mb-2">Status</label>
+            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-primary">
+              <option value="draft">Save as Draft</option>
+              <option value="live" selected>Publish Live</option>
+            </select>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+            <button type="button" class="flex-1 py-3 px-6 border-2 border-gray-300 text-secondary rounded-lg font-semibold hover:bg-gray-50 transition">
+              Save as Draft
+            </button>
+            <button type="submit" class="flex-1 py-3 px-6 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition">
+              Publish Product
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      sidebarOverlay.classList.toggle('hidden');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      sidebarOverlay.classList.add('hidden');
+    });
+  </script>
+
+</body>
+</html>
