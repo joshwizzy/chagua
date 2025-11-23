@@ -1,104 +1,42 @@
 <template>
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>{{ $t('app.name') }}</h3>
-          <p>{{ $t('app.tagline') }}</p>
+  <footer class="bg-gray-800 text-white py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-2 text-primary-400">{{ $t('app.name') }}</h3>
+          <p class="text-gray-400">{{ $t('app.tagline') }}</p>
         </div>
 
-        <div class="footer-section">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><router-link to="/products">Products</router-link></li>
-            <li><router-link to="/about">About Us</router-link></li>
-            <li><router-link to="/contact">Contact</router-link></li>
+        <div>
+          <h4 class="font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><router-link to="/products" class="text-gray-400 hover:text-white transition-colors">Products</router-link></li>
+            <li><router-link to="/about" class="text-gray-400 hover:text-white transition-colors">About Us</router-link></li>
+            <li><router-link to="/contact" class="text-gray-400 hover:text-white transition-colors">Contact</router-link></li>
           </ul>
         </div>
 
-        <div class="footer-section">
-          <h4>For Sellers</h4>
-          <ul>
-            <li><router-link to="/register">Become a Seller</router-link></li>
-            <li><router-link to="/seller/dashboard">Seller Dashboard</router-link></li>
+        <div>
+          <h4 class="font-semibold mb-4">For Sellers</h4>
+          <ul class="space-y-2">
+            <li><router-link to="/register" class="text-gray-400 hover:text-white transition-colors">Become a Seller</router-link></li>
+            <li><router-link to="/seller/dashboard" class="text-gray-400 hover:text-white transition-colors">Seller Dashboard</router-link></li>
           </ul>
         </div>
 
-        <div class="footer-section">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+        <div>
+          <h4 class="font-semibold mb-4">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
           </ul>
         </div>
       </div>
 
-      <div class="footer-bottom">
+      <div class="border-t border-gray-700 pt-4 text-center text-gray-400">
         <p>&copy; 2025 CHAGUA. All rights reserved.</p>
       </div>
     </div>
   </footer>
 </template>
-
-<style scoped>
-.footer {
-  background: #2d3748;
-  color: white;
-  padding: 3rem 0 1rem;
-  margin-top: 4rem;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.footer-section h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #667eea;
-}
-
-.footer-section h4 {
-  margin-bottom: 1rem;
-}
-
-.footer-section p {
-  color: #cbd5e0;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-section li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section a {
-  color: #cbd5e0;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-section a:hover {
-  color: white;
-}
-
-.footer-bottom {
-  border-top: 1px solid #4a5568;
-  padding-top: 1rem;
-  text-align: center;
-  color: #cbd5e0;
-}
-</style>
