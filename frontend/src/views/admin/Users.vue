@@ -1,27 +1,33 @@
 <template>
-  <div class="admin-users">
-    <div class="container">
-      <div class="header">
-        <h1>User Management</h1>
-        <button class="back-btn" @click="router.push('/admin/dashboard')">← Back to Dashboard</button>
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
+          <p class="mt-2 text-sm text-gray-600">Manage all platform users</p>
+        </div>
+        <button @click="router.push('/admin/dashboard')" class="btn btn-secondary">
+          ← Back to Dashboard
+        </button>
       </div>
 
       <!-- Filters -->
-      <div class="filters">
+      <div class="flex gap-4 mb-6">
         <input
           v-model="filters.search"
           type="text"
           placeholder="Search by name, email, or phone..."
-          class="search-input"
+          class="form-input flex-1"
           @input="fetchUsers"
         />
-        <select v-model="filters.role" @change="fetchUsers" class="filter-select">
+        <select v-model="filters.role" @change="fetchUsers" class="form-select w-48">
           <option value="">All Roles</option>
           <option value="BUYER">Buyer</option>
           <option value="SELLER">Seller</option>
           <option value="ADMIN">Admin</option>
         </select>
-        <select v-model="filters.is_active" @change="fetchUsers" class="filter-select">
+        <select v-model="filters.is_active" @change="fetchUsers" class="form-select w-48">
           <option value="">All Status</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
@@ -29,126 +35,172 @@
       </div>
 
       <!-- Users Table -->
-      <div class="table-container">
-        <div v-if="loading" class="loading">Loading users...</div>
-        <div v-else-if="users.length === 0" class="empty">No users found</div>
-        <table v-else class="users-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Joined</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ user.full_name }}</td>
-              <td>{{ user.phone_number }}</td>
-              <td>{{ user.email || 'N/A' }}</td>
-              <td>
-                <span class="badge" :class="'badge-' + user.role.toLowerCase()">
-                  {{ user.role }}
-                </span>
-              </td>
-              <td>
-                <span class="status" :class="user.is_active ? 'active' : 'inactive'">
-                  {{ user.is_active ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td>{{ formatDate(user.date_joined) }}</td>
-              <td>
-                <button class="btn-small" @click="viewUser(user.id)">View</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="pagination-info" v-if="totalCount > 0">
-        Showing {{ users.length }} of {{ totalCount }} users
+      <div class="card">
+        <div v-if="loading" class="flex justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        </div>
+        <div v-else-if="users.length === 0" class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <p class="mt-2 text-sm text-gray-500">No users found</p>
+        </div>
+        <div v-else>
+          <div class="overflow-x-auto">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="user in users" :key="user.id">
+                  <td class="font-medium text-gray-900">{{ user.full_name }}</td>
+                  <td class="text-gray-600">{{ user.phone_number }}</td>
+                  <td class="text-gray-600">{{ user.email || 'N/A' }}</td>
+                  <td>
+                    <span :class="[
+                      'badge',
+                      user.role === 'BUYER' ? 'badge-info' :
+                      user.role === 'SELLER' ? 'badge-primary' :
+                      'badge-danger'
+                    ]">
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td>
+                    <span :class="[
+                      'badge',
+                      user.is_active ? 'badge-success' : 'badge-danger'
+                    ]">
+                      {{ user.is_active ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="text-sm text-gray-600">{{ formatDate(user.date_joined) }}</td>
+                  <td>
+                    <button @click="viewUser(user.id)" class="btn btn-primary btn-sm">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="totalCount > 0" class="px-6 py-4 border-t border-gray-200 text-sm text-gray-600">
+            Showing {{ users.length }} of {{ totalCount }} users
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- User Detail Modal -->
-    <div v-if="selectedUser" class="modal" @click.self="selectedUser = null">
-      <div class="modal-content">
+    <div v-if="selectedUser" class="modal-overlay" @click.self="selectedUser = null">
+      <div class="modal-content w-full max-w-2xl">
         <div class="modal-header">
-          <h2>User Details</h2>
-          <button class="close-btn" @click="selectedUser = null">×</button>
+          <h2 class="text-xl font-bold">User Details</h2>
+          <button @click="selectedUser = null" class="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none">&times;</button>
         </div>
-        <div class="modal-body">
-          <div class="detail-grid">
-            <div class="detail-item">
-              <label>Name:</label>
-              <span>{{ selectedUser.first_name }} {{ selectedUser.last_name }}</span>
-            </div>
-            <div class="detail-item">
-              <label>Phone:</label>
-              <span>{{ selectedUser.phone_number }}</span>
-            </div>
-            <div class="detail-item">
-              <label>Email:</label>
-              <span>{{ selectedUser.email || 'Not provided' }}</span>
-            </div>
-            <div class="detail-item">
-              <label>Role:</label>
-              <select v-model="selectedUser.role" class="edit-input">
-                <option value="BUYER">Buyer</option>
-                <option value="SELLER">Seller</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
-            <div class="detail-item">
-              <label>Active:</label>
-              <input type="checkbox" v-model="selectedUser.is_active" />
-            </div>
-            <div class="detail-item">
-              <label>Verified:</label>
-              <input type="checkbox" v-model="selectedUser.is_verified" />
-            </div>
-            <div class="detail-item">
-              <label>MFA Enabled:</label>
-              <span>{{ selectedUser.mfa_enabled ? 'Yes' : 'No' }}</span>
-            </div>
-            <div class="detail-item">
-              <label>Joined:</label>
-              <span>{{ formatDate(selectedUser.date_joined) }}</span>
-            </div>
-            <div class="detail-item">
-              <label>Last Login:</label>
-              <span>{{ selectedUser.last_login ? formatDate(selectedUser.last_login) : 'Never' }}</span>
+        <div class="modal-body space-y-6">
+          <!-- Basic Info -->
+          <div>
+            <h3 class="text-lg font-semibold mb-3 pb-2 border-b-2 border-primary-500">Basic Information</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">First Name</label>
+                <p class="text-gray-900">{{ selectedUser.first_name }}</p>
+              </div>
+              <div>
+                <label class="form-label">Last Name</label>
+                <p class="text-gray-900">{{ selectedUser.last_name }}</p>
+              </div>
+              <div>
+                <label class="form-label">Phone</label>
+                <p class="text-gray-900">{{ selectedUser.phone_number }}</p>
+              </div>
+              <div>
+                <label class="form-label">Email</label>
+                <p class="text-gray-900">{{ selectedUser.email || 'Not provided' }}</p>
+              </div>
             </div>
           </div>
-          <div v-if="selectedUser.profile" class="profile-section">
-            <h3>Profile Information</h3>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <label>Country:</label>
-                <span>{{ selectedUser.profile.country }}</span>
+
+          <!-- Account Settings -->
+          <div>
+            <h3 class="text-lg font-semibold mb-3 pb-2 border-b-2 border-primary-500">Account Settings</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="role" class="form-label">Role</label>
+                <select id="role" v-model="selectedUser.role" class="form-select">
+                  <option value="BUYER">Buyer</option>
+                  <option value="SELLER">Seller</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
               </div>
-              <div class="detail-item">
-                <label>City:</label>
-                <span>{{ selectedUser.profile.city || 'N/A' }}</span>
+              <div class="space-y-2">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" v-model="selectedUser.is_active" class="w-4 h-4 text-primary-600 rounded" />
+                  <span class="text-sm font-medium text-gray-700">Active Account</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" v-model="selectedUser.is_verified" class="w-4 h-4 text-primary-600 rounded" />
+                  <span class="text-sm font-medium text-gray-700">Verified</span>
+                </label>
               </div>
-              <div class="detail-item">
-                <label>Language:</label>
-                <span>{{ selectedUser.profile.preferred_language }}</span>
+            </div>
+          </div>
+
+          <!-- Additional Info -->
+          <div>
+            <h3 class="text-lg font-semibold mb-3 pb-2 border-b-2 border-primary-500">Additional Information</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">MFA Enabled</label>
+                <p class="text-gray-900">{{ selectedUser.mfa_enabled ? 'Yes' : 'No' }}</p>
               </div>
-              <div class="detail-item">
-                <label>Currency:</label>
-                <span>{{ selectedUser.profile.preferred_currency }}</span>
+              <div>
+                <label class="form-label">Joined</label>
+                <p class="text-gray-900">{{ formatDate(selectedUser.date_joined) }}</p>
+              </div>
+              <div>
+                <label class="form-label">Last Login</label>
+                <p class="text-gray-900">{{ selectedUser.last_login ? formatDate(selectedUser.last_login) : 'Never' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Info -->
+          <div v-if="selectedUser.profile">
+            <h3 class="text-lg font-semibold mb-3 pb-2 border-b-2 border-primary-500">Profile Information</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Country</label>
+                <p class="text-gray-900">{{ selectedUser.profile.country }}</p>
+              </div>
+              <div>
+                <label class="form-label">City</label>
+                <p class="text-gray-900">{{ selectedUser.profile.city || 'N/A' }}</p>
+              </div>
+              <div>
+                <label class="form-label">Language</label>
+                <p class="text-gray-900">{{ selectedUser.profile.preferred_language }}</p>
+              </div>
+              <div>
+                <label class="form-label">Currency</label>
+                <p class="text-gray-900">{{ selectedUser.profile.preferred_currency }}</p>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-danger" @click="deleteUser">Delete User</button>
-          <button class="btn-secondary" @click="selectedUser = null">Cancel</button>
-          <button class="btn-primary" @click="updateUser">Save Changes</button>
+          <button @click="deleteUser" class="btn btn-danger">Delete User</button>
+          <button @click="selectedUser = null" class="btn btn-secondary">Cancel</button>
+          <button @click="updateUser" class="btn btn-primary">Save Changes</button>
         </div>
       </div>
     </div>
@@ -244,301 +296,3 @@ function formatDate(dateString) {
   })
 }
 </script>
-
-<style scoped>
-.admin-users {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: #333;
-}
-
-.back-btn {
-  padding: 0.5rem 1rem;
-  background: #666;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.back-btn:hover {
-  background: #555;
-}
-
-.filters {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  flex: 1;
-  min-width: 300px;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-}
-
-.filter-select {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-  background: white;
-  cursor: pointer;
-}
-
-.table-container {
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow-x: auto;
-}
-
-.loading, .empty {
-  padding: 3rem;
-  text-align: center;
-  color: #999;
-}
-
-.users-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.users-table th {
-  background: #f8f9fa;
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.users-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.badge-buyer {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.badge-seller {
-  background: #f3e5f5;
-  color: #7b1fa2;
-}
-
-.badge-admin {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.status {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.status.active {
-  background: #c8e6c9;
-  color: #2e7d32;
-}
-
-.status.inactive {
-  background: #ffcdd2;
-  color: #c62828;
-}
-
-.btn-small {
-  padding: 0.5rem 1rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.btn-small:hover {
-  background: #5568d3;
-}
-
-.pagination-info {
-  margin-top: 1rem;
-  text-align: center;
-  color: #666;
-}
-
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 0.5rem;
-  width: 90%;
-  max-width: 700px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: #999;
-  line-height: 1;
-  padding: 0;
-  width: 2rem;
-  height: 2rem;
-}
-
-.close-btn:hover {
-  color: #333;
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.detail-item label {
-  font-weight: 600;
-  color: #666;
-  font-size: 0.875rem;
-}
-
-.detail-item span {
-  color: #333;
-}
-
-.edit-input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-}
-
-.profile-section {
-  border-top: 1px solid #dee2e6;
-  padding-top: 1.5rem;
-}
-
-.profile-section h3 {
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-top: 1px solid #dee2e6;
-}
-
-.btn-primary, .btn-secondary, .btn-danger {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-.btn-primary {
-  background: #667eea;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #5568d3;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-}
-
-.btn-danger {
-  background: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #c82333;
-}
-</style>
