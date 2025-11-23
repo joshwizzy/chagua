@@ -1,56 +1,60 @@
 <template>
-  <div class="auth-page">
-    <div class="auth-container">
-      <div class="auth-card">
-        <h1>{{ $t('auth.register') }}</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-500 to-purple-700 p-4">
+    <div class="w-full max-w-lg">
+      <div class="bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">{{ $t('auth.register') }}</h1>
 
-        <form @submit.prevent="handleRegister">
-          <div class="form-group">
-            <label>{{ $t('auth.firstName') }}</label>
+        <form @submit.prevent="handleRegister" class="space-y-6">
+          <div>
+            <label class="form-label">{{ $t('auth.firstName') }}</label>
             <input
               v-model="form.first_name"
               type="text"
               required
+              class="form-input"
             />
           </div>
 
-          <div class="form-group">
-            <label>{{ $t('auth.lastName') }}</label>
+          <div>
+            <label class="form-label">{{ $t('auth.lastName') }}</label>
             <input
               v-model="form.last_name"
               type="text"
               required
+              class="form-input"
             />
           </div>
 
-          <div class="form-group">
-            <label>{{ $t('auth.phone') }}</label>
+          <div>
+            <label class="form-label">{{ $t('auth.phone') }}</label>
             <input
               v-model="form.phone_number"
               type="tel"
               placeholder="+256XXXXXXXXX"
               required
+              class="form-input"
             />
           </div>
 
-          <div class="form-group">
-            <label>{{ $t('auth.email') }} (Optional)</label>
+          <div>
+            <label class="form-label">{{ $t('auth.email') }} (Optional)</label>
             <input
               v-model="form.email"
               type="email"
+              class="form-input"
             />
           </div>
 
-          <div class="form-group">
-            <label>I want to be a:</label>
-            <select v-model="form.role" required>
+          <div>
+            <label class="form-label">I want to be a:</label>
+            <select v-model="form.role" required class="form-select">
               <option value="BUYER">Buyer</option>
               <option value="SELLER">Seller</option>
             </select>
           </div>
 
-          <div class="form-group">
-            <label>{{ $t('auth.pin') }}</label>
+          <div>
+            <label class="form-label">{{ $t('auth.pin') }}</label>
             <input
               v-model="form.pin"
               type="password"
@@ -58,11 +62,12 @@
               minlength="4"
               maxlength="6"
               required
+              class="form-input"
             />
           </div>
 
-          <div class="form-group">
-            <label>Confirm PIN</label>
+          <div>
+            <label class="form-label">Confirm PIN</label>
             <input
               v-model="form.pin_confirm"
               type="password"
@@ -70,21 +75,24 @@
               minlength="4"
               maxlength="6"
               required
+              class="form-input"
             />
           </div>
 
-          <div v-if="error" class="error-message">
+          <div v-if="error" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {{ error }}
           </div>
 
-          <button type="submit" class="btn btn-primary" :disabled="loading">
+          <button type="submit" class="btn btn-primary w-full" :disabled="loading">
             {{ loading ? 'Creating account...' : $t('auth.register') }}
           </button>
         </form>
 
-        <p class="auth-footer">
+        <p class="text-center mt-6 text-gray-600">
           Already have an account?
-          <router-link to="/login">{{ $t('auth.login') }}</router-link>
+          <router-link to="/login" class="text-primary-600 hover:text-primary-700 font-semibold hover:underline">
+            {{ $t('auth.login') }}
+          </router-link>
         </p>
       </div>
     </div>
@@ -135,111 +143,3 @@ async function handleRegister() {
   loading.value = false
 }
 </script>
-
-<style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
-}
-
-.auth-container {
-  width: 100%;
-  max-width: 500px;
-}
-
-.auth-card {
-  background: white;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #555;
-  font-weight: 500;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.error-message {
-  background: #fee;
-  color: #c33;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.btn {
-  width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.auth-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-  color: #666;
-}
-
-.auth-footer a {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
-}
-</style>
