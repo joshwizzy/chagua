@@ -1,10 +1,11 @@
 <template>
-  <div class="products-page">
-    <div class="container">
-      <h1>Products</h1>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">Products</h1>
 
-      <div class="filters">
-        <select v-model="filters.category">
+      <!-- Filters -->
+      <div class="flex gap-4 mb-8 flex-wrap">
+        <select v-model="filters.category" class="form-select w-48">
           <option value="">All Categories</option>
           <option v-for="cat in categories" :key="cat.id" :value="cat.id">
             {{ cat.name }}
@@ -16,37 +17,56 @@
           type="text"
           placeholder="Search products..."
           @input="debouncedSearch"
+          class="form-input flex-1 min-w-[200px]"
         />
 
-        <select v-model="filters.availability">
+        <select v-model="filters.availability" class="form-select w-48">
           <option value="">All Availability</option>
           <option value="IN_STOCK">In Stock</option>
           <option value="OUT_OF_STOCK">Out of Stock</option>
         </select>
       </div>
 
-      <div v-if="loading" class="loading">
-        Loading products...
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-16">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading products...</p>
       </div>
 
-      <div v-else-if="products.length === 0" class="no-products">
-        No products found
+      <!-- Empty State -->
+      <div v-else-if="products.length === 0" class="text-center py-16">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+        </svg>
+        <p class="mt-4 text-xl text-gray-600">No products found</p>
       </div>
 
-      <div v-else class="product-grid">
-        <div v-for="product in products" :key="product.id" class="product-card">
-          <router-link :to="`/products/${product.slug}`">
-            <img v-if="product.primary_image" :src="product.primary_image" :alt="product.name" />
-            <div class="product-info">
-              <h3>{{ product.name }}</h3>
-              <p class="description">{{ truncateText(product.description, 80) }}</p>
-              <div class="product-meta">
-                <span class="price">{{ formatPrice(product.price) }}</span>
-                <span v-if="product.average_rating" class="rating">
-                  ⭐ {{ product.average_rating.toFixed(1) }}
+      <!-- Product Grid -->
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-for="product in products" :key="product.id" class="card hover:-translate-y-1 transition-transform cursor-pointer">
+          <router-link :to="`/products/${product.slug}`" class="block">
+            <img
+              v-if="product.primary_image"
+              :src="product.primary_image"
+              :alt="product.name"
+              class="w-full h-56 object-cover"
+            />
+            <div v-else class="w-full h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">{{ product.name }}</h3>
+              <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ truncateText(product.description, 80) }}</p>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xl font-bold text-primary-600">{{ formatPrice(product.price) }}</span>
+                <span v-if="product.average_rating" class="flex items-center gap-1 text-sm text-gray-600">
+                  <span class="text-yellow-500">⭐</span>
+                  {{ product.average_rating.toFixed(1) }}
                 </span>
               </div>
-              <span class="seller">by {{ product.seller_name }}</span>
+              <span class="text-xs text-gray-500">by {{ product.seller_name }}</span>
             </div>
           </router-link>
         </div>
@@ -112,122 +132,3 @@ function truncateText(text, maxLength) {
   return text.substring(0, maxLength) + '...'
 }
 </script>
-
-<style scoped>
-.products-page {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.filters {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.filters select,
-.filters input {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  background: white;
-}
-
-.filters input {
-  flex: 1;
-  min-width: 200px;
-}
-
-.loading,
-.no-products {
-  text-align: center;
-  padding: 4rem;
-  color: #666;
-  font-size: 1.2rem;
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-}
-
-.product-card {
-  background: white;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-}
-
-.product-card a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.product-card img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-}
-
-.product-info {
-  padding: 1rem;
-}
-
-.product-info h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.description {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
-}
-
-.product-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.price {
-  font-weight: 600;
-  color: #667eea;
-  font-size: 1.2rem;
-}
-
-.rating {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.seller {
-  color: #999;
-  font-size: 0.85rem;
-}
-</style>

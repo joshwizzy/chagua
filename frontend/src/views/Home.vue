@@ -1,41 +1,59 @@
 <template>
-  <div class="home">
-    <header class="hero">
-      <div class="container">
-        <h1>{{ $t('app.name') }}</h1>
-        <p>{{ $t('app.tagline') }}</p>
-        <div class="cta-buttons">
-          <router-link to="/products" class="btn btn-primary">Shop Now</router-link>
-          <router-link v-if="!auth.isAuthenticated" to="/register" class="btn btn-secondary">Become a Seller</router-link>
+  <div class="min-h-screen">
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-br from-primary-500 to-purple-700 text-white py-16 px-8 text-center">
+      <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">{{ $t('app.name') }}</h1>
+        <p class="text-xl md:text-2xl mb-8">{{ $t('app.tagline') }}</p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <router-link to="/products" class="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-all hover:-translate-y-1 shadow-lg">
+            Shop Now
+          </router-link>
+          <router-link v-if="!auth.isAuthenticated" to="/register" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-lg font-semibold transition-all hover:-translate-y-1">
+            Become a Seller
+          </router-link>
         </div>
       </div>
     </header>
 
-    <section class="categories">
-      <div class="container">
-        <h2>Shop by Category</h2>
-        <div class="category-grid">
-          <div v-for="category in categories" :key="category.id" class="category-card">
-            <router-link :to="`/products?category=${category.id}`">
-              <img v-if="category.icon" :src="category.icon" :alt="category.name" />
-              <h3>{{ category.name }}</h3>
+    <!-- Categories Section -->
+    <section class="py-16 px-8 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Shop by Category</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          <div v-for="category in categories" :key="category.id" class="card hover:-translate-y-1 transition-transform cursor-pointer">
+            <router-link :to="`/products?category=${category.id}`" class="block">
+              <img v-if="category.icon" :src="category.icon" :alt="category.name" class="w-full h-40 object-cover" />
+              <div v-else class="w-full h-40 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                <span class="text-4xl">📦</span>
+              </div>
+              <h3 class="p-4 font-semibold text-gray-900 text-center">{{ category.name }}</h3>
             </router-link>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="featured-products">
-      <div class="container">
-        <h2>Featured Products</h2>
-        <div class="product-grid">
-          <div v-for="product in featuredProducts" :key="product.id" class="product-card">
-            <router-link :to="`/products/${product.slug}`">
-              <img v-if="product.primary_image" :src="product.primary_image" :alt="product.name" />
-              <h3>{{ product.name }}</h3>
-              <p class="price">{{ formatPrice(product.price) }}</p>
-              <div class="rating" v-if="product.average_rating">
-                ⭐ {{ product.average_rating.toFixed(1) }}
+    <!-- Featured Products Section -->
+    <section class="py-16 px-8 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Featured Products</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div v-for="product in featuredProducts" :key="product.id" class="card hover:-translate-y-1 transition-transform cursor-pointer">
+            <router-link :to="`/products/${product.slug}`" class="block">
+              <img v-if="product.primary_image" :src="product.primary_image" :alt="product.name" class="w-full h-48 object-cover" />
+              <div v-else class="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">{{ product.name }}</h3>
+                <p class="text-xl font-bold text-primary-600 mb-2">{{ formatPrice(product.price) }}</p>
+                <div v-if="product.average_rating" class="flex items-center gap-1 text-sm text-gray-600">
+                  <span class="text-yellow-500">⭐</span>
+                  <span>{{ product.average_rating.toFixed(1) }}</span>
+                </div>
               </div>
             </router-link>
           </div>
@@ -70,118 +88,3 @@ const formatPrice = (price) => {
   }).format(price)
 }
 </script>
-
-<style scoped>
-.home {
-  min-height: 100vh;
-}
-
-.hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.hero p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.btn {
-  padding: 0.75rem 2rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform 0.2s;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn-primary {
-  background: white;
-  color: #667eea;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: white;
-  border: 2px solid white;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-section {
-  padding: 4rem 2rem;
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.category-grid, .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
-}
-
-.category-card, .product-card {
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
-  transition: transform 0.2s;
-}
-
-.category-card:hover, .product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.category-card a, .product-card a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.category-card img, .product-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.category-card h3, .product-card h3 {
-  padding: 1rem;
-  font-size: 1.1rem;
-}
-
-.product-card .price {
-  padding: 0 1rem 1rem;
-  font-weight: 600;
-  color: #667eea;
-  font-size: 1.2rem;
-}
-
-.rating {
-  padding: 0 1rem 1rem;
-  color: #666;
-}
-</style>

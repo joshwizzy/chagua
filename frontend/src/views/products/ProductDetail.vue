@@ -1,84 +1,106 @@
 <template>
-  <div class="product-detail-page">
-    <div v-if="loading" class="loading">Loading...</div>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div v-if="loading" class="text-center py-16">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+      <p class="mt-4 text-gray-600">Loading product...</p>
+    </div>
 
-    <div v-else-if="product" class="container">
-      <div class="product-layout">
-        <div class="product-images">
-          <img :src="primaryImage" :alt="product.name" class="main-image" />
-          <div class="thumbnail-grid">
+    <div v-else-if="product" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 rounded-2xl shadow-md">
+        <!-- Product Images -->
+        <div>
+          <img :src="primaryImage" :alt="product.name" class="w-full rounded-lg mb-4" />
+          <div class="grid grid-cols-4 gap-2">
             <img
               v-for="(image, index) in product.images"
               :key="index"
               :src="image.image"
               :alt="image.alt_text || product.name"
-              class="thumbnail"
+              class="w-full h-20 object-cover rounded cursor-pointer border-2 border-transparent hover:border-primary-500 transition-colors"
               @click="primaryImage = image.image"
             />
           </div>
         </div>
 
-        <div class="product-details">
-          <h1>{{ product.name }}</h1>
-          <p class="seller">Sold by {{ product.seller_name }}</p>
-
-          <div class="rating" v-if="product.average_rating">
-            ⭐ {{ product.average_rating.toFixed(1) }} / 5.0
+        <!-- Product Details -->
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ product.name }}</h1>
+            <p class="text-gray-600">Sold by {{ product.seller_name }}</p>
           </div>
 
-          <div class="price">{{ formatPrice(product.price) }}</div>
+          <div v-if="product.average_rating" class="flex items-center gap-2 text-yellow-500">
+            ⭐ <span class="text-gray-700">{{ product.average_rating.toFixed(1) }} / 5.0</span>
+          </div>
 
-          <div class="availability">
-            <span :class="['status', product.availability.toLowerCase()]">
+          <div class="text-3xl font-bold text-primary-600">{{ formatPrice(product.price) }}</div>
+
+          <div class="flex items-center gap-4">
+            <span :class="[
+              'px-3 py-1 rounded font-medium uppercase text-sm',
+              product.availability === 'IN_STOCK' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            ]">
               {{ product.availability.replace('_', ' ') }}
             </span>
-            <span v-if="product.stock_quantity > 0" class="stock">
+            <span v-if="product.stock_quantity > 0" class="text-gray-600">
               {{ product.stock_quantity }} items available
             </span>
           </div>
 
-          <div class="description">
-            <h3>Description</h3>
-            <p>{{ product.description }}</p>
+          <div class="border-t border-gray-200 pt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+            <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
           </div>
 
-          <div v-if="product.variants && product.variants.length > 0" class="variants">
-            <h3>Options</h3>
-            <div v-for="variant in product.variants" :key="variant.id" class="variant-option">
-              <label>
+          <div v-if="product.variants && product.variants.length > 0" class="border-t border-gray-200 pt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Options</h3>
+            <div class="space-y-2">
+              <label v-for="variant in product.variants" :key="variant.id" class="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   :name="`variant-${variant.attribute}`"
                   :value="variant.id"
                   v-model="selectedVariant"
+                  class="w-4 h-4 text-primary-600"
                 />
-                {{ variant.attribute_name }}: {{ variant.value }}
-                <span v-if="variant.price_adjustment !== '0.00'">
-                  (+{{ formatPrice(variant.price_adjustment) }})
+                <span class="text-gray-700">
+                  {{ variant.attribute_name }}: {{ variant.value }}
+                  <span v-if="variant.price_adjustment !== '0.00'" class="text-primary-600">
+                    (+{{ formatPrice(variant.price_adjustment) }})
+                  </span>
                 </span>
               </label>
             </div>
           </div>
 
-          <div class="quantity-selector">
-            <label>Quantity:</label>
-            <input type="number" v-model.number="quantity" min="1" :max="product.stock_quantity" />
+          <div class="border-t border-gray-200 pt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity:</label>
+            <input
+              type="number"
+              v-model.number="quantity"
+              min="1"
+              :max="product.stock_quantity"
+              class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
           </div>
 
-          <div class="actions">
+          <div class="flex gap-4">
             <button
               @click="handleAddToCart"
-              class="btn btn-primary"
+              class="btn btn-primary flex-1"
               :disabled="product.availability === 'OUT_OF_STOCK' || addingToCart"
             >
               {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
             </button>
-            <button @click="toggleSave" class="btn btn-secondary">
+            <button
+              @click="toggleSave"
+              class="btn btn-secondary px-6"
+            >
               {{ isSaved ? '❤️ Saved' : '🤍 Save' }}
             </button>
           </div>
 
-          <div v-if="successMessage" class="success-message">
+          <div v-if="successMessage" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
             {{ successMessage }}
           </div>
         </div>
@@ -154,216 +176,3 @@ async function toggleSave() {
   }
 }
 </script>
-
-<style scoped>
-.product-detail-page {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.loading {
-  text-align: center;
-  padding: 4rem;
-  font-size: 1.2rem;
-}
-
-.product-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-}
-
-@media (max-width: 768px) {
-  .product-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.product-images .main-image {
-  width: 100%;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.thumbnail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 0.5rem;
-}
-
-.thumbnail {
-  width: 100%;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-.thumbnail:hover {
-  border-color: #667eea;
-}
-
-.product-details h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.seller {
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-.rating {
-  color: #f59e0b;
-  margin-bottom: 1rem;
-}
-
-.price {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #667eea;
-  margin-bottom: 1rem;
-}
-
-.availability {
-  margin-bottom: 1.5rem;
-}
-
-.status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.25rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-}
-
-.status.in_stock {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status.out_of_stock {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.stock {
-  margin-left: 1rem;
-  color: #666;
-}
-
-.description {
-  margin-bottom: 2rem;
-}
-
-.description h3 {
-  margin-bottom: 0.5rem;
-}
-
-.description p {
-  line-height: 1.6;
-  color: #555;
-}
-
-.variants {
-  margin-bottom: 1.5rem;
-}
-
-.variants h3 {
-  margin-bottom: 0.75rem;
-}
-
-.variant-option {
-  margin-bottom: 0.5rem;
-}
-
-.variant-option label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.variant-option input[type="radio"] {
-  margin-right: 0.5rem;
-}
-
-.quantity-selector {
-  margin-bottom: 1.5rem;
-}
-
-.quantity-selector label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.quantity-selector input {
-  width: 100px;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  flex: 1;
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: white;
-  border: 2px solid #667eea;
-  color: #667eea;
-}
-
-.btn-secondary:hover {
-  background: #667eea;
-  color: white;
-}
-
-.success-message {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #d1fae5;
-  color: #065f46;
-  border-radius: 0.5rem;
-}
-</style>
